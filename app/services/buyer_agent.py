@@ -60,6 +60,11 @@ def research_buyers(target: dict) -> dict:
         "num_buyers": int,
     }
     """
+    # Test mode: set BUYERIQ_TEST_MODE=1 to skip the paid API call and return
+    # canned data. Useful for testing the save/display/export flow for free.
+    if os.getenv("BUYERIQ_TEST_MODE") == "1":
+        return _fake_result()
+
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     num_buyers = target.get("num_buyers", 10)
@@ -123,3 +128,42 @@ def _parse_json(text: str) -> dict:
     # Sort by confidence, highest first
     result["buyers"].sort(key=lambda b: b.get("confidence", 0), reverse=True)
     return result
+
+
+def _fake_result() -> dict:
+    """Canned data for free testing of the save/display/export flow."""
+    return {
+        "buyers": [
+            {
+                "firm_name": "TEST — PremiStar / Partners Group",
+                "buyer_type": "strategic",
+                "rationale": "Test entry. One of the most active acquirers in the sector with a stated geographic expansion mandate.",
+                "contact_name": "Test Contact",
+                "contact_title": "Vice President, M&A",
+                "confidence": 92,
+                "confidence_reasoning": "Test entry — high confidence example.",
+                "source_urls": ["https://example.com/source1", "https://example.com/source2"],
+            },
+            {
+                "firm_name": "TEST — Broadwing Capital",
+                "buyer_type": "financial",
+                "rationale": "Test entry. Lower-middle-market PE firm targeting family-owned businesses at this revenue size.",
+                "contact_name": "Test Partner",
+                "contact_title": "Managing Partner",
+                "confidence": 64,
+                "confidence_reasoning": "Test entry — medium confidence example.",
+                "source_urls": ["https://example.com/source3"],
+            },
+            {
+                "firm_name": "TEST — Caymus Equity",
+                "buyer_type": "financial",
+                "rationale": "Test entry. Relevant mandate but no verifiable contact found.",
+                "contact_name": None,
+                "contact_title": None,
+                "confidence": 32,
+                "confidence_reasoning": "Test entry — low confidence, no contact.",
+                "source_urls": ["https://example.com/source4"],
+            },
+        ],
+        "research_notes": "TEST MODE — this is canned data, no API call was made. Set BUYERIQ_TEST_MODE=0 to use the real agent.",
+    }
