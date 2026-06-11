@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up — BuyerIQ</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f5f4f1; color: #1a1916; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .auth-wrap { width: 100%; max-width: 380px; padding: 2rem; }
+    .brand { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 1.75rem; }
+    .brand .logo { width: 30px; height: 30px; background: #1a1916; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 500; }
+    .brand span { font-size: 17px; font-weight: 500; }
+    .card { background: #fff; border: 1px solid #e4e0da; border-radius: 12px; padding: 1.75rem; }
+    .card h1 { font-size: 18px; font-weight: 500; margin-bottom: 0.35rem; }
+    .card .sub { font-size: 13px; color: #8a8680; margin-bottom: 1.4rem; }
+    .flash { background: #fbeaea; color: #991b1b; font-size: 12px; padding: 8px 12px; border-radius: 6px; margin-bottom: 1rem; }
+    .field { margin-bottom: 0.85rem; }
+    .field label { display: block; font-size: 12px; color: #8a8680; margin-bottom: 4px; }
+    .field input { width: 100%; font-size: 14px; padding: 9px 11px; border: 1px solid #e4e0da; border-radius: 7px; background: #faf9f7; outline: none; font-family: inherit; }
+    .field input:focus { border-color: #1a1916; }
+    .btn { width: 100%; padding: 10px; background: #1a1916; color: #fff; border: none; border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; margin-top: 0.4rem; }
+    .btn:hover { opacity: 0.88; }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 1.25rem 0; color: #b4b2a9; font-size: 12px; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e4e0da; }
+    .google-btn { width: 100%; padding: 10px; background: #fff; border: 1px solid #e4e0da; border-radius: 7px; font-size: 14px; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: #1a1916; }
+    .google-btn:hover { border-color: #1a1916; }
+    .google-btn svg { width: 17px; height: 17px; }
+    .foot { text-align: center; font-size: 13px; color: #8a8680; margin-top: 1.25rem; }
+    .foot a { color: #2a5cff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="brand"><div class="logo">B</div><span>BuyerIQ</span></div>
+    <div class="card">
+      <h1>Create your account</h1>
+      <div class="sub">Start researching buyers in minutes</div>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
+      {% endwith %}
+      <form method="POST" action="/signup">
+        <div class="field"><label>Name</label><input type="text" name="name"></div>
+        <div class="field"><label>Email</label><input type="email" name="email" required></div>
+        <div class="field"><label>Password</label><input type="password" name="password" required></div>
+        <button class="btn" type="submit">Create account</button>
+      </form>
+      <div class="divider">or</div>
+      <a href="/login/google" class="google-btn">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </a>
+    </div>
+    <div class="foot">Already have an account? <a href="/login">Sign in</a></div>
+  </div>
+</body>
+</html>
