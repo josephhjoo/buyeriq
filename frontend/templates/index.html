@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuyerIQ — AI Buyer Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f5f4f1; color: #1a1916; min-height: 100vh; font-size: 14px; }
+
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e4e0da;
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 8px; }
+    .nav-logo {
+      width: 26px; height: 26px;
+      background: #1a1916;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; font-weight: 500;
+    }
+    .nav-name { font-size: 15px; font-weight: 500; }
+    .nav-tag { font-size: 12px; color: #8a8680; }
+
+    .container { max-width: 1240px; margin: 0 auto; padding: 1.75rem 2rem; }
+
+    .layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.25rem; align-items: start; }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #e4e0da;
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .panel-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #8a8680;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 1rem;
+    }
+
+    .field { margin-bottom: 0.85rem; }
+    .field label { display: block; font-size: 11px; color: #8a8680; margin-bottom: 3px; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      font-size: 13px;
+      padding: 7px 10px;
+      border: 1px solid #e4e0da;
+      border-radius: 6px;
+      background: #faf9f7;
+      color: #1a1916;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: #1a1916; }
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+    .run-btn {
+      width: 100%;
+      padding: 9px;
+      background: #1a1916;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+      margin-top: 0.25rem;
+    }
+    .run-btn:hover { opacity: 0.85; }
+    .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .history-item {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f0ede8;
+      cursor: pointer;
+      font-size: 13px;
+      color: #1a1916;
+      transition: color 0.15s;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { color: #2a5cff; }
+    .history-meta { font-size: 11px; color: #8a8680; margin-top: 2px; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .export-row { display: flex; gap: 6px; }
+    .export-btn {
+      font-size: 12px;
+      padding: 5px 10px;
+      border: 1px solid #e4e0da;
+      border-radius: 6px;
+      background: #fff;
+      color: #8a8680;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex; align-items: center; gap: 4px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .export-btn:hover { border-color: #1a1916; color: #1a1916; }
+
+    .empty-state { text-align: center; padding: 3rem; color: #8a8680; font-size: 13px; line-height: 1.7; }
+
+    .loading-state { text-align: center; padding: 3rem; }
+    .spinner {
+      display: inline-block; width: 22px; height: 22px;
+      border: 2px solid #e4e0da; border-top-color: #1a1916;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 0.75rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-main { font-size: 13px; font-weight: 500; color: #1a1916; }
+    .loading-sub { font-size: 12px; color: #8a8680; margin-top: 4px; }
+
+    .notes-box {
+      background: #faf9f7;
+      border-left: 2px solid #1a1916;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #5f5e5a;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .buyer-card {
+      background: #fff;
+      border: 1px solid #e4e0da;
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.15s;
+    }
+    .buyer-card:hover { border-color: #c4c0ba; }
+
+    .buyer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+    .buyer-firm { font-size: 14px; font-weight: 500; color: #1a1916; }
+    .buyer-badges { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+    .badge {
+      font-size: 10px; font-weight: 400;
+      padding: 2px 7px; border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+    .badge-strategic { background: #e8f0fe; color: #1a56a4; }
+    .badge-financial { background: #ede9fe; color: #5b21b6; }
+
+    .conf-block { text-align: right; flex-shrink: 0; }
+    .conf-num { font-size: 20px; font-weight: 500; line-height: 1; }
+    .conf-high { color: #166534; }
+    .conf-mid { color: #92400e; }
+    .conf-low { color: #991b1b; }
+    .conf-lbl { font-size: 10px; color: #8a8680; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+    .conf-bar-wrap { height: 2px; background: #f0ede8; border-radius: 2px; margin-bottom: 10px; }
+    .conf-bar { height: 2px; border-radius: 2px; }
+    .bar-high { background: #16a34a; }
+    .bar-mid { background: #d97706; }
+    .bar-low { background: #dc2626; }
+
+    .contact-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .contact-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #f0ede8; border: 1px solid #e4e0da;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 500; color: #5f5e5a;
+      flex-shrink: 0;
+    }
+    .contact-name { font-size: 13px; font-weight: 500; color: #1a1916; }
+    .contact-title { font-size: 11px; color: #8a8680; margin-top: 1px; }
+    .no-contact { font-size: 12px; color: #8a8680; font-style: italic; }
+
+    .divider { height: 1px; background: #f0ede8; margin: 8px 0; }
+
+    .rationale { font-size: 12px; color: #5f5e5a; line-height: 1.65; margin-bottom: 5px; }
+    .reasoning { font-size: 11px; color: #8a8680; font-style: italic; line-height: 1.55; margin-bottom: 7px; }
+
+    .sources { display: flex; gap: 10px; flex-wrap: wrap; }
+    .source-link {
+      font-size: 11px; color: #2a5cff;
+      text-decoration: none;
+      border-bottom: 1px solid #d0d8ff;
+      padding-bottom: 1px;
+      transition: color 0.15s;
+    }
+    .source-link:hover { color: #1a3ccc; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      <div class="nav-logo">B</div>
+      <span class="nav-name">BuyerIQ</span>
+    </div>
+    <span class="nav-tag">AI-powered buyer research for M&A</span>
+  </nav>
+
+  <div class="container">
+    <div class="layout">
+
+      <div>
+        <div class="panel">
+          <div class="panel-label">Target company</div>
+          <div class="field"><label>Company name (optional)</label><input type="text" id="name" placeholder="Leave blank for 'Confidential'"></div>
+          <div class="field"><label>Industry *</label><input type="text" id="industry" placeholder="e.g. Industrial valve manufacturing"></div>
+          <div class="field"><label>Revenue ($M) *</label><input type="number" id="revenue_m" placeholder="e.g. 45"></div>
+          <div class="field"><label>Geography *</label><input type="text" id="geography" placeholder="e.g. US Midwest"></div>
+          <div class="field"><label>Description *</label><textarea id="description" placeholder="What the company does, customers, what makes it attractive..."></textarea></div>
+          <div class="field"><label>Number of buyers</label>
+            <select id="num_buyers">
+              <option value="5">5 — fastest</option>
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+              <option value="20">20 — most thorough</option>
+            </select>
+          </div>
+          <button class="run-btn" id="research-btn" onclick="runResearch()">Run buyer research</button>
+        </div>
+
+        <div class="panel" style="margin-top: 1rem;">
+          <div class="panel-label">Past searches</div>
+          <div id="history"><div class="history-meta">No searches yet</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="results-header">
+          <div class="panel-label" style="margin-bottom:0">Ranked buyers</div>
+          <div class="export-row" id="export-row" style="display:none">
+            <button class="export-btn" onclick="exportFile('csv')">↓ CSV</button>
+            <button class="export-btn" onclick="exportFile('pdf')">↓ PDF</button>
+          </div>
+        </div>
+
+        <div id="results">
+          <div class="empty-state">
+            <div style="font-size: 1.6rem; margin-bottom: 0.5rem;">◎</div>
+            Describe a target company and run the research agent.<br>
+            The agent searches the web for PE mandates, comparable deals,<br>and verifiable contacts — then ranks them by confidence.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let currentSearchId = null;
+
+    async function runResearch() {
+      const btn = document.getElementById('research-btn');
+      const payload = {
+        name: document.getElementById('name').value,
+        industry: document.getElementById('industry').value,
+        revenue_m: parseFloat(document.getElementById('revenue_m').value),
+        geography: document.getElementById('geography').value,
+        description: document.getElementById('description').value,
+        num_buyers: parseInt(document.getElementById('num_buyers').value),
+      };
+      if (!payload.industry || !payload.revenue_m || !payload.geography || !payload.description) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Researching...';
+      document.getElementById('export-row').style.display = 'none';
+      document.getElementById('results').innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <div class="loading-main">Agent is researching buyers...</div>
+          <div class="loading-sub">Searching for PE mandates, comparable deals, and contacts. Takes 1–3 minutes.</div>
+        </div>`;
+      try {
+        const res = await fetch('/api/research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Research failed');
+        currentSearchId = data.id;
+        renderResults(data);
+        loadHistory();
+      } catch(e) {
+        document.getElementById('results').innerHTML =
+          `<div class="empty-state">⚠️ ${e.message}</div>`;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Run buyer research';
+    }
+
+    function confClass(c) {
+      if (c >= 70) return 'conf-high';
+      if (c >= 40) return 'conf-mid';
+      return 'conf-low';
+    }
+    function barClass(c) {
+      if (c >= 70) return 'bar-high';
+      if (c >= 40) return 'bar-mid';
+      return 'bar-low';
+    }
+    function initials(name) {
+      if (!name) return '?';
+      return name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    }
+
+    function renderResults(search) {
+      const buyers = search.buyers || [];
+      if (!buyers.length) {
+        document.getElementById('results').innerHTML =
+          '<div class="empty-state">No buyers found. Try a broader description.</div>';
+        return;
+      }
+      let html = '';
+      if (search.research_notes) {
+        html += `<div class="notes-box">${search.research_notes}</div>`;
+      }
+      buyers.forEach(b => {
+        const cc = confClass(b.confidence);
+        const bc = barClass(b.confidence);
+        const typeClass = b.buyer_type === 'strategic' ? 'badge-strategic' : 'badge-financial';
+        const sources = (b.source_urls || []).map((u, i) =>
+          `<a href="${u}" target="_blank" rel="noopener" class="source-link">Source ${i+1} →</a>`).join('');
+        const contactHtml = b.contact_name
+          ? `<div class="contact-row">
+               <div class="contact-avatar">${initials(b.contact_name)}</div>
+               <div>
+                 <div class="contact-name">${b.contact_name}</div>
+                 <div class="contact-title">${b.contact_title || ''}</div>
+               </div>
+             </div>`
+          : `<div class="contact-row"><div class="no-contact">No contact identified — recommend direct outreach or PitchBook</div></div>`;
+        html += `
+          <div class="buyer-card">
+            <div class="buyer-top">
+              <div>
+                <div class="buyer-firm">${b.firm_name}</div>
+                <div class="buyer-badges">
+                  <span class="badge ${typeClass}">${b.buyer_type}</span>
+                </div>
+              </div>
+              <div class="conf-block">
+                <div class="conf-num ${cc}">${b.confidence}</div>
+                <div class="conf-lbl">confidence</div>
+              </div>
+            </div>
+            <div class="conf-bar-wrap"><div class="conf-bar ${bc}" style="width:${b.confidence}%"></div></div>
+            ${contactHtml}
+            <div class="divider"></div>
+            <div class="rationale">${b.rationale || ''}</div>
+            <div class="reasoning">${b.confidence_reasoning || ''}</div>
+            <div class="sources">${sources}</div>
+          </div>`;
+      });
+      document.getElementById('results').innerHTML = html;
+      document.getElementById('export-row').style.display = 'flex';
+    }
+
+    function exportFile(kind) {
+      if (!currentSearchId) return;
+      window.location = `/api/searches/${currentSearchId}/export/${kind}`;
+    }
+
+    async function loadHistory() {
+      const res = await fetch('/api/searches');
+      const searches = await res.json();
+      if (!searches.length) return;
+      document.getElementById('history').innerHTML = searches.slice(0, 8).map(s => `
+        <div class="history-item" onclick="loadSearch(${s.id})">
+          ${s.target_name} — ${s.industry}
+          <div class="history-meta">${s.buyer_count} buyers · ${s.created_at.slice(0,10)}</div>
+        </div>`).join('');
+    }
+
+    async function loadSearch(id) {
+      const res = await fetch(`/api/searches/${id}`);
+      const data = await res.json();
+      currentSearchId = id;
+      renderResults(data);
+    }
+
+    loadHistory();
+  </script>
+
+</body>
+</html>
