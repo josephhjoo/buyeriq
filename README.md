@@ -2,7 +2,7 @@
  
 **AI-powered buyer research for M&A sell-side engagements.**
  
-Given a target company, BuyerIQ autonomously researches likely acquirers — both strategic buyers and private equity firms — using Claude with live web search, then ranks each contact by a confidence score based on source recency and verifiability. Results are saved per user and exportable as CSV or PDF.
+Given a target company, BuyerIQ autonomously researches likely acquirers, both strategic buyers and private equity firms, using Claude with live web search, then ranks each contact by a confidence score based on source recency and verifiability. Results are saved per user and exportable as CSV or PDF.
  
 🔗 **Live:** [buyeriq-n7wb.onrender.com](https://buyeriq-n7wb.onrender.com)
  
@@ -14,11 +14,11 @@ When a boutique investment bank runs a sell-side M&A process, an analyst has to 
  
 BuyerIQ automates that workflow:
  
-1. You describe the target company — industry, revenue, geography, and a short description.
+1. You describe the target company (industry, revenue, geography) and a short description.
 2. An AI agent searches the web for PE firms with a relevant mandate, recent comparable acquisitions, and corporate-development contacts at strategic acquirers.
 3. Each potential buyer is returned with a rationale, the most relevant contact person, source links, and a **confidence score (0–100)** reflecting how verifiable the contact is.
 4. Results are saved to your account and can be exported as a formatted CSV or PDF deal memo.
-The confidence score is the core idea — it makes explicit the judgment an analyst would otherwise make in their head, scoring contacts higher when they come from official press releases or firm websites and lower when the source is weak or possibly outdated.
+The confidence score is the core idea: it makes explicit the judgment an analyst would otherwise make in their head, scoring contacts higher when they come from official press releases or firm websites and lower when the source is weak or possibly outdated.
  
 ---
  
@@ -29,10 +29,10 @@ Browser → Flask (gunicorn) → Claude Sonnet + web search tool
                            → PostgreSQL (per-user search history)
 ```
  
-- **Agent** — a single call to Claude Sonnet with the server-side web search tool enabled (up to 10 searches per run). A system prompt defines the confidence-scoring rubric and enforces structured JSON output, which is parsed into ranked buyer records.
-- **Backend** — Flask application factory pattern, with authentication (email/password + Google OAuth) via Flask-Login and Authlib. Every search is scoped to the authenticated user.
-- **Storage** — SQLAlchemy models (`User`, `Search`, `Buyer`) backed by PostgreSQL in production, SQLite locally.
-- **Exports** — CSV via Python's `csv` module, PDF via ReportLab.
+- **Agent** - a single call to Claude Sonnet with the server-side web search tool enabled (up to 10 searches per run). A system prompt defines the confidence-scoring rubric and enforces structured JSON output, which is parsed into ranked buyer records.
+- **Backend** - Flask application factory pattern, with authentication (email/password + Google OAuth) via Flask-Login and Authlib. Every search is scoped to the authenticated user.
+- **Storage** - SQLAlchemy models (`User`, `Search`, `Buyer`) backed by PostgreSQL in production, SQLite locally.
+- **Exports** - CSV via Python's `csv` module, PDF via ReportLab.
 ---
  
 ## Tech stack
@@ -93,5 +93,5 @@ buyeriq/
  
 ## Notes
  
-- AI-researched contacts should be verified before outreach — the confidence score and source links are designed to support that, not replace it.
+- AI-researched contacts should be verified before outreach. The confidence score and source links are designed to support that, not replace it.
 - The hosted demo runs on a free tier and may take ~30 seconds to wake from idle on the first request.
