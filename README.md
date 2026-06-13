@@ -10,7 +10,7 @@ Given a target company, BuyerIQ autonomously researches likely acquirers, both s
  
 ## What it does
  
-When a boutique investment bank runs a sell-side M&A process, an analyst has to build a list of potential buyers and find the right contact at each firm — work that's traditionally done by manually browsing the web and judging how confident they are that each contact is correct and current.
+When a boutique investment bank runs a sell-side M&A process, an analyst has to build a list of potential buyers and find the right contact at each firm. This is work that's traditionally done by manually browsing the web and judging how confident they are that each contact is correct and current.
  
 BuyerIQ automates that workflow:
  
